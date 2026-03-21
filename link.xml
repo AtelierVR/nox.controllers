@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<linker>
+	<assembly fullname="Nox.Controllers" preserve="all" />
+	<assembly fullname="Nox.Controllers.Runtime" preserve="all" />
+	<assembly fullname="Nox.Mods.Controllers" preserve="all" />
+</linker>

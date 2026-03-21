@@ -1,0 +1,20 @@
+{
+    "name": "Nox.Mods.Controllers",
+    "rootNamespace": "",
+    "references": [
+        "UniTask",
+        "Nox.CCK",
+        "Nox.Avatars",
+        "Nox.Controllers",
+        "Nox.Controllers.Runtime"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

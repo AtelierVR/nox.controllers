@@ -1,0 +1,32 @@
+#if UNITY_EDITOR
+using Nox.CCK.Mods.Cores;
+using Nox.CCK.Mods.Initializers;
+using Nox.CCK.Mods.Panels;
+
+namespace Nox.Controllers.Runtime {
+	public class Editor : IEditorModInitializer {
+		internal static IEditorModCoreAPI CoreAPI;
+
+		private static IEditorPanel     _controllerPanel;
+		private        ControllerPanel _controller;
+
+		public void OnInitializeEditor(IEditorModCoreAPI api) {
+			CoreAPI          = api;
+			_controller      = new ControllerPanel();
+			_controllerPanel = api.PanelAPI.AddLocalPanel(_controller);
+		}
+
+		public void OnUpdateEditor() {
+			_controller.OnUpdate();
+		}
+
+		public void OnDisposeEditor() {
+			CoreAPI.PanelAPI.RemoveLocalPanel(_controllerPanel);
+			_controllerPanel = null;
+			_controller?.Dispose();
+			_controller = null;
+			CoreAPI     = null;
+		}
+	}
+}
+#endif // UNITY_EDITOR

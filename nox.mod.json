@@ -1,0 +1,38 @@
+{
+  "type": "mod",
+  "id": "nox.controllers",
+  "provides": [
+    "fr.hactazia.controller",
+    "controller"
+  ],
+  "name": "controller API",
+  "version": "1.0.0",
+  "description": "API for controller",
+  "license": "GPL-3.0",
+  "icon": null,
+  "contact": {
+    "email": "hactazia@gmail.com",
+    "source": "https://github.com/AtelierVR/nox.controllers",
+    "website": "https://nox.hactazia.fr/",
+    "issues": "https://github.com/AtelierVR/nox.controllers/issues"
+  },
+  "authors": [
+    {
+      "name": "Hactazia",
+      "email": "hactazia@gmail.com",
+      "website": "https://hactazia.fr/"
+    }
+  ],
+  "contributors": [],
+  "relations": [],
+  "entrypoints": {
+    "main": [
+      "Nox.Controllers.Runtime.Main"
+    ],
+    "editor": [
+      "Nox.Controllers.Runtime.Editor"
+    ]
+  },
+  "references": [],
+  "permissions": []
+}
