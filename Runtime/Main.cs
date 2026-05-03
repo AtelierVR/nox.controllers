@@ -55,6 +55,8 @@ namespace Nox.Controllers.Runtime {
 				if (_current == null)
 					return true;
 
+				var oldCam = _current.GetCamera();
+				CameraChop.UnregisterCamera(oldCam);
 				_current.Dispose();
 				_current = null;
 				NotifyCurrentChanged(null);
@@ -62,6 +64,8 @@ namespace Nox.Controllers.Runtime {
 			}
 
 			if (_current != null) {
+				var oldCam = _current.GetCamera();
+				CameraChop.UnregisterCamera(oldCam);
 				await controller.Restore(_current);
 				_current.Dispose();
 			}
@@ -69,6 +73,7 @@ namespace Nox.Controllers.Runtime {
 			_current = controller;
 
 			var cam = _current.GetCamera();
+			CameraChop.RegisterCamera(cam);
 			Camera.SetupCurrent(cam);
 			cam.tag = "MainCamera";
 			foreach (var c in ComponentExtension.GetComponentsInChildren<Camera>())
