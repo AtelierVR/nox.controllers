@@ -4,6 +4,7 @@
     "references": [
         "Nox.CCK",
         "Nox.Controllers",
+        "Nox.Editor.Panel",
         "UniTask",
         "Nox.Avatars"
     ],

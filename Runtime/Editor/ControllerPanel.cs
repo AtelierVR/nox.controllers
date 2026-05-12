@@ -1,27 +1,58 @@
 #if UNITY_EDITOR
 using System;
 using System.Collections.Generic;
-using Nox.CCK.Mods.Panels;
+using Nox.CCK.Mods.Cores;
+using Nox.CCK.Mods.Initializers;
 using Nox.Controllers;
+using Nox.Editor.Panel;
 using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace Nox.Controllers.Runtime {
-	public class ControllerPanel : IEditorPanelBuilder, IDisposable {
-		public string GetId()
-			=> "controller";
+	public class ControllerPanel : IEditorModInitializer, Nox.Editor.Panel.IPanel {
+		internal IEditorModCoreAPI      API;
+		internal ControllerPanelInstance Instance;
 
-		public string GetName()
-			=> "Controller";
+		public void OnInitializeEditor(IEditorModCoreAPI api) => API = api;
+		public void OnDisposeEditor()  { Instance?.OnDestroy(); API = null; }
+		public void OnUpdateEditor()   => Instance?.OnUpdate();
 
-		public bool IsHidden()
-			=> false;
+		public string[] GetPath()  => new[] { "controller" };
+		public string   GetLabel() => "Controller";
 
-		private readonly VisualElement _root       = new();
-		private          DateTime      _lastUpdate = DateTime.MinValue;
-		private          IController   _lastController;
+		public IInstance[] GetInstances()
+			=> Instance != null ? new IInstance[] { Instance } : Array.Empty<IInstance>();
 
-		public void OnUpdate() {
+		public IInstance Instantiate(IWindow window, Dictionary<string, object> data)
+			=> Instance = new ControllerPanelInstance(this, window);
+	}
+
+	public class ControllerPanelInstance : IInstance {
+		private readonly ControllerPanel _panel;
+		private readonly IWindow         _window;
+		private          VisualElement   _root;
+		private          DateTime        _lastUpdate    = DateTime.MinValue;
+		private          IController     _lastController;
+
+		public ControllerPanelInstance(ControllerPanel panel, IWindow window) {
+			_panel  = panel;
+			_window = window;
+		}
+
+		public Nox.Editor.Panel.IPanel GetPanel()  => _panel;
+		public IWindow                 GetWindow() => _window;
+		public string                  GetTitle()  => "Controller";
+		public void                    OnDestroy() => _panel.Instance = null;
+
+		public VisualElement GetContent() {
+			if (_root != null) return _root;
+			_root = _panel.API.AssetAPI.GetAsset<VisualTreeAsset>("controller-panel.uxml").CloneTree();
+			_root.style.flexGrow = 1;
+			UpdateControllerInfo();
+			return _root;
+		}
+
+		internal void OnUpdate() {
 			if (DateTime.UtcNow - _lastUpdate < TimeSpan.FromSeconds(0.5)) return;
 			_lastUpdate = DateTime.UtcNow;
 
@@ -35,66 +66,41 @@ namespace Nox.Controllers.Runtime {
 		}
 
 		private void UpdateControllerInfo() {
-			var noControllerLabel = _root.Q<Label>("no-controller");
+			if (_root == null) return;
+			var noController  = _root.Q<VisualElement>("no-controller");
 			var controllerInfo = _root.Q<VisualElement>("controller-info");
 
 			if (_lastController == null) {
-				if (noControllerLabel != null) noControllerLabel.style.display = DisplayStyle.Flex;
-				if (controllerInfo != null) controllerInfo.style.display = DisplayStyle.None;
+				noController?.EnableInClassList("hidden", false);
+				controllerInfo?.EnableInClassList("hidden", true);
 				return;
 			}
 
-			if (noControllerLabel != null) noControllerLabel.style.display = DisplayStyle.None;
-			if (controllerInfo != null) controllerInfo.style.display = DisplayStyle.Flex;
+			noController?.EnableInClassList("hidden", true);
+			controllerInfo?.EnableInClassList("hidden", false);
 
-			// Update controller information
-			var idLabel = _root.Q<Label>("controller-id");
+			var idLabel       = _root.Q<Label>("controller-id");
 			var priorityLabel = _root.Q<Label>("controller-priority");
-			var cameraLabel = _root.Q<Label>("controller-camera");
+			var cameraLabel   = _root.Q<Label>("controller-camera");
 			var colliderLabel = _root.Q<Label>("controller-collider");
 			var positionLabel = _root.Q<Label>("controller-position");
 
-			if (idLabel != null) 
-				idLabel.text = $"ID: {_lastController.GetId() ?? "N/A"}";
-
-			if (priorityLabel != null) 
-				priorityLabel.text = $"Priority: {_lastController.GetPriority()}";
+			if (idLabel != null)       idLabel.text       = _lastController.GetId() ?? "N/A";
+			if (priorityLabel != null) priorityLabel.text = _lastController.GetPriority().ToString();
 
 			var camera = _lastController.GetCamera();
-			if (cameraLabel != null) 
-				cameraLabel.text = $"Camera: {(camera != null ? camera.name : "None")}";
+			if (cameraLabel != null)   cameraLabel.text   = camera != null ? camera.name : "None";
 
 			var collider = _lastController.GetCollider();
-			if (colliderLabel != null) 
-				colliderLabel.text = $"Collider: {(collider != null ? collider.name : "None")}";
+			if (colliderLabel != null) colliderLabel.text = collider != null ? collider.name : "None";
 
 			if (positionLabel != null && camera != null) {
 				var pos = camera.transform.position;
-				positionLabel.text = $"Position: ({pos.x:F2}, {pos.y:F2}, {pos.z:F2})";
-			} else if (positionLabel != null) 
-				positionLabel.text = "Position: N/A";
+				positionLabel.text = $"({pos.x:F2}, {pos.y:F2}, {pos.z:F2})";
+			} else if (positionLabel != null)
+				positionLabel.text = "N/A";
 		}
 
-		public VisualElement Make(Dictionary<string, object> data) {
-			_root.ClearBindings();
-			_root.Clear();
-
-			var child = Editor.CoreAPI.AssetAPI.GetAsset<VisualTreeAsset>("controller-panel.uxml").CloneTree();
-			child.style.flexGrow = 1;
-			_root.Add(child);
-
-			var version = _root.Q<Label>("version");
-			if (version != null) 
-				version.text = "v" + Editor.CoreAPI.ModMetadata.GetVersion();
-
-			UpdateControllerInfo();
-
-			return _root;
-		}
-
-		public void Dispose() {
-			// Nothing specific to dispose for now
-		}
 	}
 }
 #endif // UNITY_EDITOR

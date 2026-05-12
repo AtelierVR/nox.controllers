@@ -30,7 +30,8 @@
       "Nox.Controllers.Runtime.Main"
     ],
     "editor": [
-      "Nox.Controllers.Runtime.Editor"
+      "Nox.Controllers.Runtime.Editor",
+      "Nox.Controllers.Runtime.ControllerPanel"
     ]
   },
   "references": [],
