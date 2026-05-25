@@ -5,9 +5,9 @@
     "fr.hactazia.controller",
     "controller"
   ],
-  "name": "controller API",
+  "name": "Controller",
   "version": "1.0.0",
-  "description": "API for controller",
+  "description": "Input controller management and mapping API for Nox.",
   "license": "GPL-3.0",
   "icon": null,
   "contact": {

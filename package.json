@@ -1,5 +1,6 @@
 {
   "name": "nox.controllers",
-  "displayName": "Nox - Controllers",
-  "version": "1.0.0"
+  "displayName": "Nox - Controller",
+  "version": "1.0.0",
+  "description": "Input controller management and mapping API for Nox."
 }
