@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Nox.CCK.Players;
 using Nox.CCK.Utils;
-using Nox.Players;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
