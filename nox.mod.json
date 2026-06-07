@@ -24,7 +24,28 @@
     }
   ],
   "contributors": [],
-  "relations": [],
+  "relations": [
+    {
+      "id": "nox.cck",
+      "type": "depends",
+      "register": "git+https://github.com/AtelierVR/nox.cck.git"
+    },
+    {
+      "id": "com.cysharp.unitask",
+      "type": "depends",
+      "register": "git+https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask"
+    },
+    {
+      "id": "nox.avatars",
+      "type": "depends",
+      "register": "git+https://github.com/AtelierVR/nox.avatars.git"
+    },
+    {
+      "id": "nox.editor.panel",
+      "type": "depends",
+      "register": "git+https://github.com/AtelierVR/nox.editor.panel.git"
+    }
+  ],
   "entrypoints": {
     "main": [
       "Nox.Controllers.Runtime.Main"

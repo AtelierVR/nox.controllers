@@ -6,7 +6,8 @@
         "Nox.Controllers",
         "Nox.Editor.Panel",
         "UniTask",
-        "Nox.Avatars"
+        "Nox.Avatars",
+        "UnityEngine.UIElementsModule"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
