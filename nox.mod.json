@@ -23,7 +23,6 @@
       "website": "https://hactazia.fr/"
     }
   ],
-  "contributors": [],
   "relations": [
     {
       "id": "nox.cck",
@@ -54,7 +53,5 @@
       "Nox.Controllers.Runtime.Editor",
       "Nox.Controllers.Runtime.ControllerPanel"
     ]
-  },
-  "references": [],
-  "permissions": []
+  }
 }
