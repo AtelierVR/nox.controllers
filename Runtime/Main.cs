@@ -36,7 +36,7 @@ namespace Nox.Controllers.Runtime {
 		public UnityEvent<IController> OnCurrentChanged { get; } = new();
 
 		private void NotifyCurrentChanged(IController controller) {
-			_coreAPI?.EventAPI.Emit("controller_changed", null);
+			_coreAPI?.EventAPI.Emit("controller_changed", controller);
 			OnCurrentChanged?.Invoke(controller);
 		}
 
