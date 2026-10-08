@@ -21,10 +21,12 @@ namespace Nox.Controllers.Runtime {
 			Instance = this;
 			_coreAPI = api;
 			_current = null;
+			CameraGuard.Install();
 		}
 
 		public async UniTask OnDisposeMainAsync() {
 			await SetCurrent(null);
+			CameraGuard.Uninstall();
 			_coreAPI = null;
 			Instance = null;
 		}
@@ -57,6 +59,7 @@ namespace Nox.Controllers.Runtime {
 
 				var oldCam = _current.GetCamera();
 				CameraChop.UnregisterCamera(oldCam);
+				CameraGuard.Clear();
 				_current.Dispose();
 				_current = null;
 				NotifyCurrentChanged(null);
@@ -74,6 +77,21 @@ namespace Nox.Controllers.Runtime {
 
 			var cam = _current.GetCamera();
 			CameraChop.RegisterCamera(cam);
+
+			// Garde-fou caméra : seule la caméra du contrôleur courant (et celles de son rig, ex. mains)
+			// peut rendre dans les yeux XR / à l'écran. Toutes les autres (monde/avatar/session) sont
+			// neutralisées au runtime par CameraGuard.
+			CameraGuard.Clear();
+			CameraGuard.Allow(cam);
+
+			// La caméra du contrôleur est protégée durablement : le garde-fou ne doit jamais la
+			// « détaguer » ni la neutraliser, même quand un autre contrôleur devient courant, sinon le
+			// retour XR/bureau casse le rendu (XRController/DesktopController).
+			CameraGuard.Protect(cam);
+
+			if (_current is Component component)
+				CameraGuard.AddRoot(component.transform);
+
 			Camera.SetupCurrent(cam);
 			cam.tag = "MainCamera";
 			foreach (var c in ComponentExtension.GetComponentsInChildren<Camera>())
