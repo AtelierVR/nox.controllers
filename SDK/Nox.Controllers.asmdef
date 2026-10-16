@@ -2,6 +2,7 @@
   "name": "Nox.Controllers",
   "references": [
     "Nox.CCK",
+    "Nox.CCK.Entities",
     "Nox.Players",
     "Nox.Avatars",
     "UniTask"

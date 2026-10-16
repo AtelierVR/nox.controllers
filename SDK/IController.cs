@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
-using Nox.CCK.Players;
+using Nox.CCK.Entities;
 using Nox.CCK.Utils;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -60,7 +60,7 @@ namespace Nox.Controllers {
 		/// <summary>
 		/// Get the parts of the controller.
 		/// For example, the hands, head, base, etc.
-		/// You can use <see cref="HumanBone"/> or <see cref="PlayerRig"/> as ushort index for the parts.
+		/// You can use <see cref="HumanBone"/> or <see cref="EntityRig"/> as ushort index for the parts.
 		/// </summary>
 		/// <returns></returns>
 		public IReadOnlyDictionary<ushort, TransformObject> GetParts();
