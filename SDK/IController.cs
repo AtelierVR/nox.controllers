@@ -41,9 +41,10 @@ namespace Nox.Controllers {
 		public UniTask Restore(IController controller);
 
 		/// <summary>
-		/// Dispose the controller.
+		/// Disposes the controller and completes once what it must finish first is done: the avatar it owns
+		/// writes its last values there, and the table those writes go to goes away with the mods right after.
 		/// </summary>
-		public void Dispose();
+		public UniTask Dispose();
 
 		/// <summary>
 		/// Get the Camera associated with the controller.

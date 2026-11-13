@@ -3,7 +3,6 @@ using Cysharp.Threading.Tasks;
 using Nox.CCK.Mods.Cores;
 using Nox.CCK.Mods.Initializers;
 using Nox.CCK.Utils;
-using Nox.Controllers;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
@@ -60,7 +59,7 @@ namespace Nox.Controllers.Runtime {
 				var oldCam = _current.GetCamera();
 				CameraChop.UnregisterCamera(oldCam);
 				CameraGuard.Clear();
-				_current.Dispose();
+				await _current.Dispose();
 				_current = null;
 				NotifyCurrentChanged(null);
 				return true;
@@ -70,7 +69,7 @@ namespace Nox.Controllers.Runtime {
 				var oldCam = _current.GetCamera();
 				CameraChop.UnregisterCamera(oldCam);
 				await controller.Restore(_current);
-				_current.Dispose();
+				await _current.Dispose();
 			}
 
 			_current = controller;
@@ -92,11 +91,7 @@ namespace Nox.Controllers.Runtime {
 			if (_current is Component component)
 				CameraGuard.AddRoot(component.transform);
 
-			Camera.SetupCurrent(cam);
-			cam.tag = "MainCamera";
-			foreach (var c in ComponentExtension.GetComponentsInChildren<Camera>())
-				if (c != cam && c.CompareTag("MainCamera"))
-					c.tag = "Untagged";
+			// La caméra du contrôleur devient la caméra principale (Camera.current/main + tag).\n\t\t\tCameraHelper.SetMain(cam);
 
 			var eventSystem = _current.GetEventSystem();
 			EventSystem.current = eventSystem;
