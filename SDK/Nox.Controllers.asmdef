@@ -5,6 +5,7 @@
     "Nox.CCK.Entities",
     "Nox.Players",
     "Nox.Avatars",
+    "Nox.UI",
     "UniTask"
   ]
 }
