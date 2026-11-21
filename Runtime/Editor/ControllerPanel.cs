@@ -10,15 +10,15 @@ using UnityEngine.UIElements;
 
 namespace Nox.Controllers.Runtime {
 	public class ControllerPanel : IEditorModInitializer, Nox.Editor.Panel.IPanel {
-		internal IEditorModCoreAPI      API;
+		internal IEditorModCoreAPI API;
 		internal ControllerPanelInstance Instance;
 
 		public void OnInitializeEditor(IEditorModCoreAPI api) => API = api;
-		public void OnDisposeEditor()  { Instance?.OnDestroy(); API = null; }
-		public void OnUpdateEditor()   => Instance?.OnUpdate();
+		public void OnDisposeEditor() { Instance?.OnDestroy(); API = null; }
+		public void OnUpdateEditor() => Instance?.OnUpdate();
 
-		public string[] GetPath()  => new[] { "controller" };
-		public string   GetLabel() => "Controller";
+		public string[] GetPath() => new[] { "controller" };
+		public string GetLabel() => "Controller";
 
 		public IInstance[] GetInstances()
 			=> Instance != null ? new IInstance[] { Instance } : Array.Empty<IInstance>();
@@ -29,20 +29,20 @@ namespace Nox.Controllers.Runtime {
 
 	public class ControllerPanelInstance : IInstance {
 		private readonly ControllerPanel _panel;
-		private readonly IWindow         _window;
-		private          VisualElement   _root;
-		private          DateTime        _lastUpdate    = DateTime.MinValue;
-		private          IController     _lastController;
+		private readonly IWindow _window;
+		private VisualElement _root;
+		private DateTime _lastUpdate = DateTime.MinValue;
+		private IController _lastController;
 
 		public ControllerPanelInstance(ControllerPanel panel, IWindow window) {
-			_panel  = panel;
+			_panel = panel;
 			_window = window;
 		}
 
-		public Nox.Editor.Panel.IPanel GetPanel()  => _panel;
-		public IWindow                 GetWindow() => _window;
-		public string                  GetTitle()  => "Controller";
-		public void                    OnDestroy() => _panel.Instance = null;
+		public Nox.Editor.Panel.IPanel GetPanel() => _panel;
+		public IWindow GetWindow() => _window;
+		public string GetTitle() => "Controller";
+		public void OnDestroy() => _panel.Instance = null;
 
 		public VisualElement GetContent() {
 			if (_root != null) return _root;
@@ -67,7 +67,7 @@ namespace Nox.Controllers.Runtime {
 
 		private void UpdateControllerInfo() {
 			if (_root == null) return;
-			var noController  = _root.Q<VisualElement>("no-controller");
+			var noController = _root.Q<VisualElement>("no-controller");
 			var controllerInfo = _root.Q<VisualElement>("controller-info");
 
 			if (_lastController == null) {
@@ -79,20 +79,24 @@ namespace Nox.Controllers.Runtime {
 			noController?.EnableInClassList("hidden", true);
 			controllerInfo?.EnableInClassList("hidden", false);
 
-			var idLabel       = _root.Q<Label>("controller-id");
+			var idLabel = _root.Q<Label>("controller-id");
 			var priorityLabel = _root.Q<Label>("controller-priority");
-			var cameraLabel   = _root.Q<Label>("controller-camera");
+			var cameraLabel = _root.Q<Label>("controller-camera");
 			var colliderLabel = _root.Q<Label>("controller-collider");
 			var positionLabel = _root.Q<Label>("controller-position");
 
-			if (idLabel != null)       idLabel.text       = _lastController.GetId() ?? "N/A";
+			if (idLabel != null) idLabel.text = _lastController.GetId() ?? "N/A";
 			if (priorityLabel != null) priorityLabel.text = _lastController.GetPriority().ToString();
 
 			var camera = _lastController.GetCamera();
-			if (cameraLabel != null)   cameraLabel.text   = camera != null ? camera.name : "None";
+			if (cameraLabel != null) cameraLabel.text = camera != null ? camera.name : "None";
 
-			var collider = _lastController.GetCollider();
-			if (colliderLabel != null) colliderLabel.text = collider != null ? collider.name : "None";
+			var colliders = _lastController.GetColliders();
+			if (colliderLabel != null) colliderLabel.text = colliders.Count > 0
+				? colliders.Count > 1
+					? $"{colliders[0].name} (+{colliders.Count - 1})"
+					: colliders[0].name
+				: "None";
 
 			if (positionLabel != null && camera != null) {
 				var pos = camera.transform.position;

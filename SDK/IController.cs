@@ -4,6 +4,7 @@ using Nox.CCK.Entities;
 using Nox.CCK.Utils;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.Events;
 
 namespace Nox.Controllers {
 	/// <summary>
@@ -29,10 +30,18 @@ namespace Nox.Controllers {
 		public int GetPriority();
 
 		/// <summary>
-		/// Get the collider associated with the controller.
+		/// Get the colliders of the body of the controller: the capsule, plus whatever the current avatar
+		/// or the worn props add (hands, head, ...).
 		/// </summary>
-		/// <returns></returns>
-		public Collider GetCollider();
+		public IReadOnlyList<Collider> GetColliders();
+
+		/// <summary>
+		/// Invoked when the set returned by <see cref="GetColliders"/> may have changed (an avatar was
+		/// attached or swapped, a prop was worn). <c>null</c> when the controller cannot announce it: the
+		/// consumers then only read the list when the controller itself changes.
+		/// </summary>
+		public UnityEvent<IController> OnCollidersChanged
+			=> null;
 
 		/// <summary>
 		/// Set data for the controller.
